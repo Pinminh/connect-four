@@ -20,6 +20,21 @@ class Connect4Board
     true
   end
 
+  def drop_mark_at_col(col)
+    column = @slots[col]
+
+    return false if column.all? { |value| !value.nil? }
+
+    row = 0
+    column.each do |value|
+      break if value.nil?
+
+      row += 1
+    end
+
+    put_mark(row, col)
+  end
+
   def all_colored?
     @slots.all? do |column|
       column.all? { |value| !value.nil? }
