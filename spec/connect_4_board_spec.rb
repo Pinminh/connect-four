@@ -148,4 +148,49 @@ describe Connect4Board do
       end
     end
   end
+
+  describe '#four_aligned?' do
+    subject(:aligned_board) { described_class.new(5, 5) }
+
+    before do
+      slots = [[nil, nil, nil, :red, nil],
+               [:red, nil, :red, :red, nil],
+               [nil, :red, nil, :red, nil],
+               [:red, :red, nil, :red, nil],
+               [:red, :red, :red, :red, nil]]
+      aligned_board.instance_variable_set(:@slots, slots)
+    end
+
+    context 'when it is called with explicit arguments' do
+      it 'returns true when there is a row of four at (3, 0)' do
+        expect(aligned_board).to be_four_aligned(3, 0)
+      end
+
+      it 'returns true when there is a diagonal of four at (1, 2)' do
+        expect(aligned_board).to be_four_aligned(1, 2)
+      end
+
+      it 'returns true when there is a column of four at (2, 4)' do
+        expect(aligned_board).to be_four_aligned(2, 4)
+      end
+
+      it 'returns false when there are neither row, column nor diagonal of four at (0,  1)' do
+        expect(aligned_board).not_to be_four_aligned(0, 1)
+      end
+    end
+
+    context 'when it is called with default arguments' do
+      it 'returns true when the last move makes the four' do
+        last_slot = { row: 2, col: 1 }
+        aligned_board.instance_variable_set(:@last_slot, last_slot)
+        expect(aligned_board).to be_four_aligned
+      end
+
+      it 'return false when the last move does not make the four' do
+        last_slot = { row: 1, col: 3 }
+        aligned_board.instance_variable_set(:@last_slot, last_slot)
+        expect(aligned_board).not_to be_four_aligned
+      end
+    end
+  end
 end
