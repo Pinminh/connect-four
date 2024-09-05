@@ -16,6 +16,10 @@ class Connect4Game
     input
   end
 
+  def game_over?
+    @board.all_colored? || @board.four_aligned?
+  end
+
   private
 
   def convert_string_to_position(string)
