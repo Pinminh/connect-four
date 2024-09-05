@@ -101,4 +101,20 @@ describe Connect4Board do
       end
     end
   end
+
+  describe '#all_colored?' do
+    subject(:uncolored_board) { described_class.new }
+
+    it 'returns false if some slots in the board are left with nil value' do
+      expect(uncolored_board).not_to be_all_colored
+    end
+
+    subject(:colored_board) { described_class.new }
+
+    it 'returns true if all slots in the board are filled with color value' do
+      slots = colored_board.instance_variable_get(:@slots)
+      slots.each { |column| column.fill(:blue) }
+      expect(colored_board).to be_all_colored
+    end
+  end
 end
