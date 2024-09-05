@@ -19,4 +19,10 @@ class Connect4Board
     @next_color = @next_color == :red ? :blue : :red
     true
   end
+
+  def all_colored?
+    @slots.all? do |column|
+      column.all? { |value| !value.nil? }
+    end
+  end
 end
