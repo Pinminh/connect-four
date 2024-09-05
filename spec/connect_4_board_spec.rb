@@ -117,4 +117,35 @@ describe Connect4Board do
       expect(colored_board).to be_all_colored
     end
   end
+
+  describe '#drop_mark_at_col' do
+    subject(:drop_board) { described_class.new(8, 12) }
+    let(:column) { drop_board.instance_variable_get(:@slots)[4] }
+
+    context 'when the column 4 is full' do
+      before do
+        column.fill(:blue)
+      end
+
+      it 'do not change the slot value' do
+        expect { drop_board.drop_mark_at_col(4) }.not_to(change { column })
+      end
+
+      it 'do not change the next color' do
+        expect { drop_board.drop_mark_at_col(4) }.not_to(change { drop_board.next_color })
+      end
+    end
+
+    context 'when the column 4 is not full' do
+      it 'adds next color at the bottom of the column' do
+        expect { drop_board.drop_mark_at_col(4) }
+          .to change { column[0] }.from(nil).to(drop_board.next_color)
+      end
+
+      it 'flips the next color' do
+        expect { drop_board.drop_mark_at_col(4) }
+          .to change { drop_board.next_color }.from(:red).to(:blue)
+      end
+    end
+  end
 end
