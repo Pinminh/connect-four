@@ -1,8 +1,13 @@
 require_relative '../lib/connect_4_game'
 
 describe Connect4Game do
+  before do
+    allow($stdin).to receive(:getch).and_return(nil)
+  end
+
   describe '#input_next_move' do
     subject(:game) { described_class.new(8, 10) }
+    let(:displayer) { game.instance_variable_get(:@displayer) }
 
     context 'when player enters 3 invalid inputs follows 1 valid input' do
       before do
@@ -16,7 +21,7 @@ describe Connect4Game do
       end
 
       it 'prints 3 errors responding to the first 3 inputs' do
-        expect(game).to receive(:puts).with(/^Error:/).exactly(3).times
+        expect(displayer).to receive(:show_error).exactly(3).times
         game.input_next_move
       end
 
