@@ -80,4 +80,48 @@ describe Connect4Game do
       end
     end
   end
+
+  describe '#play_game' do
+    subject(:game_played) { described_class.new(4, 4) }
+    let(:board_played) { game_played.instance_variable_get(:@board) }
+
+    context 'red-player goes 1, 2, 3, 4 while blue-player goes 1, 1, 1' do
+      before do
+        allow(game_played).to receive(:input_next_move)
+          .and_return(1, 1, 2, 1, 3, 1, 4)
+      end
+
+      it 'inputs moves for 7 times' do
+        expect(game_played).to receive(:input_next_move).exactly(7).times
+        game_played.play_game
+      end
+
+      it 'declares that red-player is the winner' do
+        expect(game_played).to receive(:winning_result).and_return(:red)
+        game_played.play_game
+      end
+    end
+
+    context 'red-player and blue-player play so that no one win' do
+      before do
+        allow(game_played).to receive(:input_next_move)
+          .and_return(3, 2, 1, 4, 2, 3, 4, 1, 1, 2, 3, 4, 1, 2, 3, 4)
+      end
+
+      it 'inputs moves for 16 times' do
+        expect(game_played).to receive(:input_next_move).exactly(16).times
+        game_played.play_game
+      end
+
+      it 'declares that the game is tie' do
+        expect(game_played).to receive(:winning_result).and_return(:tie)
+        game_played.play_game
+      end
+
+      it 'makes the board all-colored' do
+        game_played.play_game
+        expect(board_played).to be_all_colored
+      end
+    end
+  end
 end
