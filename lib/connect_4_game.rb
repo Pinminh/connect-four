@@ -23,9 +23,12 @@ class Connect4Game
   end
 
   def winning_result
+    previous_color = @board.next_color == :red ? :blue : :red
+
+    return previous_color if @board.four_aligned?
     return :tie if @board.all_colored?
 
-    @board.next_color == :red ? :blue : :red
+    :unknown
   end
 
   def play_game
