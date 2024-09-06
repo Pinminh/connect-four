@@ -1,14 +1,16 @@
 require_relative 'connect_4_board'
+require_relative 'connect_4_displayer'
 
 class Connect4Game
   def initialize(row = 6, col = 7)
     @board = Connect4Board.new(row, col)
+    @displayer = Connect4Displayer.new(@board)
   end
 
   def input_next_move
     input = nil
     loop do
-      print "#{@board.next_color}-player enter position (1 to #{@board.slots.size}): "
+      @displayer.show_prompt "#{@board.next_color}-player enter position (1 to #{@board.slots.size}): "
       input = convert_string_to_position(gets.chomp)
 
       break if valid_position?(input)
@@ -26,27 +28,17 @@ class Connect4Game
     @board.next_color == :red ? :blue : :red
   end
 
-  def intro_message
-    puts 'The game is all about: drop color coins, ' \
-         'get a row of coins, or a coloumn of coins, ' \
-         'or a diagonal of coins, and we win.'
-  end
-
-  def winning_message(result)
-    puts 'The game is tie!' if result == :tie
-    puts 'The winner is red-player' if result == :red
-    puts 'The winner is blue-player' if result == :blue
-  end
-
   def play_game
-    intro_message
+    @displayer.intro_message
     loop do
+      @displayer.show_board
+
       position = input_next_move
       @board.drop_mark_at_col(position - 1)
 
       break if game_over?
     end
-    winning_message(winning_result)
+    @displayer.winning_message(winning_result)
   end
 
   private
@@ -59,18 +51,18 @@ class Connect4Game
 
   def valid_position?(position)
     if position.nil?
-      puts 'Error: please enter a recognizable positive integer!'
+      @displayer.show_error 'Error: please enter a recognizable positive integer!'
       return false
     end
 
     if position.zero? || position > @board.slots.size
-      puts "Error: position must be between 1 and #{@board.slots.size} inclusively!"
+      @displayer.show_error "Error: position must be between 1 and #{@board.slots.size} inclusively!"
       return false
     end
 
     column = @board.slots[position - 1]
     if column.all? { |slot| !slot.nil? }
-      puts 'Error: this column is full, please choose another one!'
+      @displayer.show_error 'Error: this column is full, please choose another one!'
       return false
     end
 
